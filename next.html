@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Telugu:wght@100..900&display=swap" rel="stylesheet">
+  <title>Anniversary — Selamat</title>
+  <style>
+    :root{--bg:#fff;--accent:#ff6f91;--muted:#f0e9ef}
+    *{box-sizing:border-box;font-family:Inter, system-ui, Arial, sans-serif}
+    html,body{height:100%;margin:0;background:var(--bg)}
+    /* layout dua kolom fullscreen */
+    .next-hero{display:flex;gap:0;height:100vh;align-items:stretch}
+    .col-text{width:50%;padding:80px 8%;display:flex;flex-direction:column;justify-content:center;background:transparent}
+    .col-text h1{font-size:56px;color:var(--accent);margin:0 0 18px}
+    .col-text p{font-size:20px;color:#6a6172;line-height:1.6;max-width:650px}
+    .typing{display:inline-block;white-space:pre-wrap;overflow:hidden;border-right:3px solid rgba(0,0,0,0.08);animation:caret 800ms steps(1) infinite;padding-right:6px}
+    @keyframes caret{50%{border-color:transparent}}
+    .col-image{width:50%;height:100vh;overflow:hidden}
+    .col-image img{width:100%;height:100vh;object-fit:cover;display:block}
+
+    /* carousel fullscreen bawah (di bawah hero, menempati full viewport tinggi juga) */
+    .carousel-wrap{position:relative;width:100%;height:300px;overflow:hidden}
+    .carousel-slide{position:absolute;inset:0;opacity:0;transform:scale(1.03);transition:opacity .9s ease, transform .9s ease;display:flex;align-items:center;justify-content:center}
+    .carousel-slide.show{opacity:1;transform:scale(1)}
+    .carousel-slide img{width:100%;height:100%;object-fit:cover}
+
+    /* caption simple */
+    .caption{position:absolute;left:24px;bottom:24px;color:#fff;background:rgba(0,0,0,0.24);padding:10px 14px;border-radius:8px;font-size:16px}
+
+    /* responsive: tumpuk kolom di layar sempit */
+    @media(max-width:900px){
+      .next-hero{flex-direction:column}
+      .col-text,.col-image{width:100%}
+      .col-image img{height:60vh}
+    }
+
+    /* Warna latar belakang keseluruhan */
+body {
+  background: linear-gradient(135deg, #d5d5d5, #8a8a8a);
+  color: #a29c9c;
+  font-family: 'Poppins', sans-serif;
+  margin: 0;
+  overflow-x: hidden;
+}
+
+/* Area nextPage agar tetap fullscreen */
+#nextPage {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 100vh;
+  width: 100%;
+  padding: 0 5%;
+  box-sizing: border-box;
+  transition: background 1s ease;
+}
+
+/* Efek transisi pada teks */
+#nextPage h1, #nextPage p {
+  animation: fadeInText 2s ease forwards;
+  opacity: 0;
+}
+
+@keyframes fadeInText {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Efek transisi gambar */
+#heroImage {
+  max-width: 50%;
+  height: 100vh;
+  object-fit: cover;
+  border-radius: 10px;
+  animation: fadeZoom 2.5s ease forwards;
+  opacity: 0;
+}
+
+@keyframes fadeZoom {
+  from {
+    opacity: 0;
+    transform: scale(1.1);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Carousel agar fullscreen dan menyatu dengan warna abu */
+.carousel {
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  background: #c8c8c8;
+}
+
+.carousel img {
+  width: 100%;
+  height: 100vh;
+  object-fit: cover;
+  animation: fadeSlide 2s ease-in-out;
+}
+
+@keyframes fadeSlide {
+  from { opacity: 0; transform: scale(1.05); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.next-hero {
+    background-color: #c4bbbb;
+    padding-right: 0px;
+}
+
+#typingText {
+  color: #f2f2f2; /* ganti dengan warna yang kamu inginkan */
+  font-family: "Noto Serif Telugu", serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+}
+
+
+  </style>
+</head>
+<body>
+
+  <main>
+    <!-- HERO (dua kolom) -->
+    <img src="mensive.gif">
+    <section class="next-hero" id="hero">
+      <div class="col-text">
+        <h1 id="heroTitle">It's our day</h1>
+        <p><span id="typingText" class="typing"></span></p>
+      </div>
+
+      <div class="col-image">
+        <!-- gambar besar setengah halaman, ganti path sesuai file Anda -->
+         <img src="love.png" alt="" style="padding-right: 50px;">
+        <img id="heroImage" src="pb2.jpeg">
+      </div>
+    </section>
+
+    <!-- CAROUSEL FULLSCREEN (di bawah hero) -->
+    <section id="carousel" class="carousel-wrap" aria-hidden="false">
+      <div class="carousel-slide show"><img src="photostrip1.png" alt="slide 1"></div>
+      <div class="carousel-slide"><img src="photostrip2.png" alt="slide 2"></div>
+    </section>
+    <img src="slide2.gif">
+  </main>
+
+  <!-- audio (ganti src ke file Anda, pemutaran akan dicoba saat load karena navigasi berasal dari klik user) -->
+  <audio id="bgAudio" src="lover.mp3" loop preload="auto"></audio>
+
+<script>
+/* next.html: typing + carousel + audio (autoplay attempt)
+   - Pastikan images/photo1.jpg..photo3.jpg dan lover.mp3 ada di folder project.
+*/
+
+// Typing text
+(function(){
+  const typingEl = document.getElementById('typingText');
+  const message = "To Ma Belle🩷, Kita baru sebulan ngejalanin ini, aku ngerasa selalu seneng setiap momen bareng kamu. Aku tau ini baru awal dari segalanya, tapi aku harap kita bisa terus bareng di hubungan ini buat saling memahami, menyayangi, dan saling menjaga satu sama lain apa pun yang terjadi.";
+  const speed = 40;
+  let i = 0;
+  function step(){
+    if(i < message.length){
+      typingEl.textContent += message.charAt(i++);
+      setTimeout(step, speed);
+    }
+  }
+  // start typing on load
+  window.addEventListener('load', ()=> {
+    step();
+    tryPlayAudio();
+    initCarousel();
+  });
+})();
+
+// Carousel logic
+function initCarousel(){
+  const slides = Array.from(document.querySelectorAll('.carousel-slide'));
+  const heroImage = document.getElementById('heroImage');
+  let cur = slides.findIndex(s=> s.classList.contains('show'));
+  if(cur<0) cur = 0;
+  const AUTO_MS = 4000;
+
+  function show(idx){
+    slides.forEach((s,i)=> s.classList.toggle('show', i===idx));
+    // sync hero image to current slide for visual harmony
+    const img = slides[idx].querySelector('img');
+    if(img) heroImage.src = img.src;
+    // optional caption update
+    const caption = document.getElementById('caption');
+    cur = idx;
+  }
+
+  show(cur);
+  let id = setInterval(()=> show((cur+1)%slides.length), AUTO_MS);
+
+  // pause auto when page hidden
+  document.addEventListener('visibilitychange', ()=> {
+    if(document.hidden) clearInterval(id);
+    else id = setInterval(()=> show((cur+1)%slides.length), AUTO_MS);
+  });
+
+  // allow arrow keys
+  window.addEventListener('keydown',(e)=>{
+    if(e.key==='ArrowRight'){ show((cur+1)%slides.length); clearInterval(id); id=setInterval(()=> show((cur+1)%slides.length), AUTO_MS); }
+    if(e.key==='ArrowLeft'){ show((cur-1+slides.length)%slides.length); clearInterval(id); id=setInterval(()=> show((cur+1)%slides.length), AUTO_MS); }
+  });
+}
+
+// Try to play audio (navigation from user click usually allows play)
+function tryPlayAudio(){
+  const audio = document.getElementById('bgAudio');
+  if(!audio) return;
+  audio.play().catch(()=> {
+    // autoplay blocked — provide visual hint (optional)
+    console.warn('Audio autoplay blocked; user interaction needed to start audio.');
+    // you can create a small overlay/button to let user start audio manually if desired
+  });
+}
+</script>
+</body>
+</html>

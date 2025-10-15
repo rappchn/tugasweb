@@ -1,0 +1,495 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Anniversary — Kunci Hati</title>
+  <style>
+    :root{--bg:#f8f6f9;--accent:#ff6f91;--muted:#f0e9ef}
+    *{box-sizing:border-box;font-family:Inter, system-ui, Arial, sans-serif}
+    html,body{height:100%;margin:0}
+    body{display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg,#fff 0%,#f7f3fb 100%);}
+    .stage{width:100%;max-width:900px;padding:30px}
+
+    .lock-wrap{position:relative;background:#fff;border-radius:20px;padding:40px;display:flex;flex-direction:column;align-items:center;gap:18px;box-shadow:0 10px 30px rgba(20,10,40,0.08)}
+    .heart{position:relative;width:320px;height:320px;background:linear-gradient(180deg,#ffd6e0,#ffb6d5);border-radius:40% 40% 48% 48%/45% 45% 55% 55%;display:flex;align-items:center;justify-content:center}
+    .heart img{pointer-events:none}
+
+    /* Dials (kombinasi angka) */
+    .dials{display:flex;gap:10px;margin-top:14px}
+    .dial{width:48px;height:64px;border-radius:8px;background:linear-gradient(180deg,#ffffff,#faf5fb);display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 6px 14px rgba(10,10,30,0.06);position:relative;user-select:none}
+    .dial .num{font-size:20px;font-weight:700;padding:6px}
+    .dial .arrow{position:absolute;left:50%;transform:translateX(-50%);width:28px;height:22px;display:flex;align-items:center;justify-content:center;border-radius:4px;background:transparent;cursor:pointer}
+    .dial .up{top:6px}
+    .dial .down{bottom:6px}
+    .dial:active{transform:translateY(1px)}
+
+    .hint{font-size:14px;color:#6a6172}
+
+    .controls{display:flex;gap:12px;align-items:center;margin-top:10px}
+    .btn-small{padding:8px 12px;border-radius:8px;border:1px solid #eee;background:#fff;font-weight:600;cursor:pointer}
+
+    .next{display:none;flex-direction:column;align-items:center;gap:16px;padding:40px}
+    .next h1{margin:0;color:#2b2330}
+    .next p{margin:0;color:#6a6172}
+
+    .unlocked .heart{animation:pop 700ms ease forwards}
+    @keyframes pop{0%{transform:scale(1)}50%{transform:scale(1.04)}100%{transform:scale(1.0) translateY(-6px)}}
+
+    /* responsive */
+    @media(max-width:420px){.dials{gap:6px}.dial{width:40px;height:56px}}
+
+    /* ===== Ubah ukuran heart & gambar ===== */
+    .heart {
+    position: relative;       /* sudah ada, pastikan tetap relative */
+    width: 550px;             /* besarkan sesuai keinginan (contoh 380px) */
+    height: 480px;            /* sesuaikan agar proporsional */
+    background: linear-gradient(180deg,#ffd6e0,#ffb6d5);
+    border-radius: 40% 40% 48% 48%/45% 45% 55% 55%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    }
+
+    /* Buat gambar mengisi area heart proporsional */
+    .heart img {
+    width: 120%;               /* atur persentase untuk mengontrol ukuran gambar */
+    height: auto;
+    object-fit: contain;
+    pointer-events: none;
+    display: block;
+    }
+
+    /* ===== Posisikan dials di tengah bawah heart ===== */
+    /* pastikan .lock-wrap tetap position:relative (sudah ada di kode Anda) */
+    .dials {
+    position: absolute;       /* posisikan relatif terhadap .lock-wrap */
+    left: 50%;
+    transform: translateX(-50%);
+    top: calc(50% + 70px);    /* atur vertikal: 50% + offset. Ubah 70px jika perlu */
+    gap: 12px;
+    z-index: 12;              /* di atas background heart */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;  /* jika ingin background polos, buat tidak menutupi */
+    padding: 0;
+    margin-top: -70px;
+    margin-left: -10px;
+    }
+
+    /* jika ingin dials sedikit lebih kecil */
+    .dial {
+    width: 30px;              /* kecilkan/ubah sesuai selera */
+    height: 68px;
+    border-radius: 8px;
+    font-size: 15px;
+    }
+
+    /* responsif: otomatis kecilkan heart & geser dials pada layar sempit */
+    @media (max-width: 480px) {
+    .heart { width: 260px; height: 260px; }
+    .heart img { width: 70%; }
+    .dials { top: calc(50% + 48px); gap: 8px; }
+    .dial { width: 36px; height: 56px; font-size: 16px; }
+    }
+
+    .btn-small {
+    background-color: #ff6b81; /* Warna latar tombol (merah muda lembut) */
+    color: white;              /* Warna teks */
+    border: none;              /* Hilangkan garis tepi */
+    padding: 8px 16px;         /* Ukuran tombol */
+    border-radius: 8px;        /* Sudut melengkung */
+    cursor: pointer;           /* Tangan saat hover */
+    transition: background 0.3s ease;
+    }
+
+    .btn-small:hover {
+    background-color: #ff4757; /* Warna saat di-hover */
+    }
+
+
+
+
+  </style>
+</head>
+<body>
+  <div class="stage">
+    <div id="screen">
+      <div id="lock" class="lock-wrap" aria-live="polite">
+        <div class="heart" role="img" aria-label="Gembok hati">
+          <img src="gembok.png" alt="gembok hati"/>
+        </div>
+
+        
+
+        <div class="dials" role="group" aria-label="kombinasi">
+          <!-- enam dial; setiap dial dapat diputar naik/turun -->
+          <div class="dial" data-index="0">
+            <div class="arrow up">▲</div>
+            <div class="num">0</div>
+            <div class="arrow down">▼</div>
+          </div>
+          <div class="dial" data-index="1">
+            <div class="arrow up">▲</div>
+            <div class="num">0</div>
+            <div class="arrow down">▼</div>
+          </div>
+          <div class="dial" data-index="2">
+            <div class="arrow up">▲</div>
+            <div class="num">0</div>
+            <div class="arrow down">▼</div>
+          </div>
+          <div class="dial" data-index="3">
+            <div class="arrow up">▲</div>
+            <div class="num">0</div>
+            <div class="arrow down">▼</div>
+          </div>
+          <div class="dial" data-index="4">
+            <div class="arrow up">▲</div>
+            <div class="num">0</div>
+            <div class="arrow down">▼</div>
+          </div>
+          <div class="dial" data-index="5">
+            <div class="arrow up">▲</div>
+            <div class="num">0</div>
+            <div class="arrow down">▼</div>
+          </div>
+        </div>
+
+        <div class="controls">
+          <button id="check" class="btn-small">Periksa</button>
+          <button id="reset" class="btn-small">Reset</button>
+          <div id="status" style="color:#6a6172;font-size:14px"></div>
+        </div>
+      </div>
+
+    <!-- ===== NEXT / CONGRATS (GANTI BLOK nextPage DI SINI) ===== -->
+    <section id="nextPage" class="next" aria-hidden="true">
+    <style>
+    /* Scoped styles for nextPage layout and carousel */
+    .next-hero{display:flex;gap:32px;align-items:stretch}
+    .next-hero .col-text{width:50%;padding:48px 36px;display:flex;flex-direction:column;justify-content:center}
+    .next-hero .col-text h1{font-size:48px;margin:0;color:var(--accent);font-weight:700}
+    .next-hero .col-text p{margin-top:18px;color:#6a6172;font-size:18px;line-height:1.6;max-width:640px}
+
+
+    /* typing cursor effect */
+    .typing{display:inline-block;white-space:pre-wrap;overflow:hidden;border-right:3px solid rgba(0,0,0,0.08);animation:caret 800ms steps(1) infinite}
+    @keyframes caret{50%{border-color:transparent}}
+
+
+    .next-hero .col-image{width:50%;display:block}
+    .next-hero .col-image img{width:100%;height:100vh;object-fit:cover;display:block}
+
+
+    /* Fullscreen carousel below */
+    .carousel-wrap{position:relative;width:100%;height:100vh;margin-top:8px;overflow:hidden}
+    .carousel-slide{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;transform:scale(1.03);transition:opacity .9s ease, transform .9s ease}
+    .carousel-slide.show{opacity:1;transform:scale(1)}
+    .carousel-slide img{width:100%;height:100%;object-fit:cover}
+
+
+    /* thumbnails removed; no controls */
+    @media(max-width:900px){.next-hero{flex-direction:column}.next-hero .col-text,.next-hero .col-image{width:100%}.next-hero .col-image img{height:60vh}}
+    
+    /* === HERO FULLSCREEN === */
+    .next-hero {
+    margin-top: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 100vh;           /* membuat full tinggi layar */
+    padding: 0 8%;           /* beri jarak kiri-kanan */
+    box-sizing: border-box;
+    }
+
+    .next-hero .text {
+    flex: 1;
+    color: #ff6f91;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    }
+
+    .next-hero .text h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+    }
+
+    .next-hero .text p {
+    font-size: 1.3rem;
+    color: #6a6172;
+    max-width: 600px;
+    line-height: 1.5;
+    }
+
+    .next-hero .image {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    }
+
+    .next-hero .image img {
+    width: 100%;
+    height: 100vh;            /* gambar juga memenuhi tinggi layar */
+    object-fit: cover;        /* agar proporsional */
+    border-radius: 0;
+    }
+
+
+    </style>
+
+<script>
+  // Kombinasi benar (6 digit)
+  const CORRECT = '150925';
+
+  const dials = Array.from(document.querySelectorAll('.dial'));
+  const status = document.getElementById('status');
+  const checkBtn = document.getElementById('check');
+  const resetBtn = document.getElementById('reset');
+  const lock = document.getElementById('lock');
+  const next = document.getElementById('nextPage');
+  const relock = document.getElementById('relock');
+
+  // inisialisasi nilai setiap dial
+  function getValues(){
+    return dials.map(d => d.querySelector('.num').textContent);
+  }
+
+  function setValue(index, val){
+    const n = ((val % 10) + 10) % 10; // pastikan 0-9
+    dials[index].querySelector('.num').textContent = String(n);
+  }
+
+  function rotate(index, dir){
+    // dir = +1 atau -1
+    const cur = parseInt(dials[index].querySelector('.num').textContent,10);
+    setValue(index, cur + dir);
+  }
+
+  // event listeners untuk tiap panah
+  dials.forEach((dial, idx)=>{
+    dial.querySelector('.up').addEventListener('click', ()=>{ rotate(idx, +1); status.textContent = ''; });
+    dial.querySelector('.down').addEventListener('click', ()=>{ rotate(idx, -1); status.textContent = ''; });
+
+    // juga dukung klik pada angka untuk naik satu
+    dial.querySelector('.num').addEventListener('click', ()=>{ rotate(idx, +1); status.textContent = ''; });
+  });
+
+  function currentCode(){
+    return getValues().join('');
+  }
+
+  checkBtn.addEventListener('click', ()=>{
+    const cur = currentCode();
+    if(cur === CORRECT){
+      status.style.color = 'green';
+      status.textContent = 'yess bener';
+      lock.classList.add('unlocked');
+      setTimeout(()=>{ openCongrats(); }, 800);
+    } else {
+      status.style.color = 'crimson';
+      status.textContent = 'Salah sayangg (dd-mm-yy)';
+      // efek goyang
+      lock.animate([{transform:'translateX(-4px)'},{transform:'translateX(4px)'},{transform:'translateX(0)'}], {duration:300});
+    }
+  });
+
+  resetBtn.addEventListener('click', ()=>{
+    dials.forEach((_,i)=> setValue(i,0));
+    status.textContent = '';
+  });
+
+  relock.addEventListener('click',(e)=>{ e.preventDefault(); next.style.display='none'; lock.style.display='flex'; lock.classList.remove('unlocked'); status.textContent=''; dials.forEach((_,i)=> setValue(i,0)); });
+
+  // keyboard support: left/right to move, up/down to change focused dial
+  let focus = 0;
+  function highlight(i){
+    dials.forEach((d,idx)=> d.style.boxShadow = idx===i ? '0 8px 20px rgba(20,10,40,0.12)' : '0 6px 14px rgba(10,10,30,0.06)');
+  }
+  highlight(focus);
+
+  window.addEventListener('keydown',(e)=>{
+    if(e.key === 'ArrowRight') { focus = (focus+1) % dials.length; highlight(focus); }
+    if(e.key === 'ArrowLeft') { focus = (focus-1 + dials.length) % dials.length; highlight(focus); }
+    if(e.key === 'ArrowUp') { rotate(focus, +1); }
+    if(e.key === 'ArrowDown') { rotate(focus, -1); }
+    if(e.key === 'Enter') checkBtn.click();
+  });
+</script>
+
+    <!-- audio background (ganti src dengan file audio Anda) -->
+    <audio id="bgAudio" src="lover.mp3" loop preload="auto"></audio>
+
+<script>
+/* -----------------------
+  Fungsi: buka halaman congrats setelah unlock
+  Panggil openCongrats() saat kunci benar (di kode Anda setelah lock.classList.add('unlocked'))
+------------------------*/
+function openCongrats(){
+  window.location.href = 'next.html';
+}
+
+/* Jika di kode Anda saat ini Anda menggunakan:
+   setTimeout(()=>{ lock.style.display='none'; next.style.display='flex'; }, 800);
+   ganti bagian itu dengan: openCongrats(); 
+   (atau panggil openCongrats() setelah kunci benar).
+*/
+
+/* -----------------------
+  Carousel & photobox
+------------------------*/
+let autoId = null;
+let cur = 0;
+const slides = Array.from(document.querySelectorAll('#photoWrap .slide'));
+const thumbs = Array.from(document.querySelectorAll('#thumbs .thumb'));
+const caption = document.getElementById('caption');
+const AUTO_MS = 3500;
+
+function showSlide(i){
+  slides.forEach((s,idx)=> {
+    if(idx===i){
+      s.style.opacity = '1';
+      s.style.transform = 'scale(1)';
+      s.classList.add('show');
+    } else {
+      s.style.opacity = '0';
+      s.style.transform = 'scale(1.04)';
+      s.classList.remove('show');
+    }
+  });
+  thumbs.forEach((t,idx)=> {
+    t.classList.toggle('active', idx===i);
+    t.style.border = idx===i ? '3px solid var(--accent)' : '3px solid transparent';
+  });
+  caption.textContent = 'Foto ke-' + (i+1);
+  const download = document.getElementById('downloadMain');
+  download.href = slides[i].src;
+  cur = i;
+}
+
+function nextSlide(){ showSlide((cur+1) % slides.length); }
+
+function startAuto(){ if(autoId) clearInterval(autoId); autoId = setInterval(nextSlide, AUTO_MS); }
+function stopAuto(){ if(autoId) clearInterval(autoId); autoId = null; }
+
+function initCongratsCarousel(){
+  // safety: jika belum ada gambar, do nothing
+  if(!slides.length) return;
+  showSlide(0);
+  startAuto();
+}
+
+// thumbnails click
+thumbs.forEach((t, idx)=>{
+  t.addEventListener('click', ()=>{ showSlide(idx); stopAuto(); startAuto(); });
+  t.addEventListener('dblclick', ()=> openLightbox(idx));
+});
+
+// click slide opens lightbox
+slides.forEach((s, idx)=> s.addEventListener('click', ()=> openLightbox(idx)));
+
+// pause/play button
+const pauseBtn = document.getElementById('pausePlay');
+if(pauseBtn){
+  let paused=false;
+  pauseBtn.addEventListener('click', ()=> {
+    if(paused){ startAuto(); document.getElementById('bgAudio').play(); pauseBtn.textContent='Pause'; paused=false; }
+    else { stopAuto(); document.getElementById('bgAudio').pause(); pauseBtn.textContent='Play'; paused=true; }
+  });
+}
+
+// lightbox
+const lightbox = document.getElementById('lightbox');
+const lbImg = document.getElementById('lbImg');
+function openLightbox(i){
+  lbImg.src = slides[i].src;
+  lightbox.style.display = 'flex';
+}
+if(lightbox) lightbox.addEventListener('click', ()=> { lightbox.style.display='none'; });
+
+/* Keyboard support while on congrats page */
+window.addEventListener('keydown', (e)=>{
+  const next = document.getElementById('nextPage');
+  if(!next || next.style.display !== 'flex') return;
+  if(e.key === 'ArrowRight'){ nextSlide(); startAuto(); }
+  if(e.key === 'ArrowLeft'){ showSlide((cur-1 + slides.length) % slides.length); startAuto(); }
+  if(e.key === ' ') { e.preventDefault(); document.getElementById('pausePlay').click(); }
+});
+</script>
+
+<script>
+// Typing animation + fullscreen carousel for nextPage
+(function(){
+const next = document.getElementById('nextPage');
+const typingEl = document.getElementById('typingText');
+const heroTitle = document.getElementById('heroTitle');
+const heroImage = document.getElementById('heroImage');
+const slides = Array.from(document.querySelectorAll('.carousel-slide'));
+let carouselInterval = null;
+const CAROUSEL_MS = 4000;
+
+
+const message = "happy mensive day ma belle, aku harap kita bisa terus bersama menjalani hubungan ini dan sama sama sabar";
+const typingSpeed = 40; // ms per char
+
+
+function startTyping(){
+typingEl.textContent = '';
+let i = 0;
+const tId = setInterval(()=>{
+typingEl.textContent += message.charAt(i);
+i++;
+if(i >= message.length) clearInterval(tId);
+}, typingSpeed);
+}
+
+
+function showSlide(idx){
+slides.forEach((s,i)=> s.classList.toggle('show', i===idx));
+// also update hero image to current slide for visual sync
+const img = slides[idx].querySelector('img');
+if(img) heroImage.src = img.src;
+}
+
+
+function startCarousel(){
+if(carouselInterval) clearInterval(carouselInterval);
+let cur = slides.findIndex(s=> s.classList.contains('show'));
+if(cur < 0) cur = 0;
+carouselInterval = setInterval(()=>{ cur = (cur+1) % slides.length; showSlide(cur); }, CAROUSEL_MS);
+}
+
+
+function stopCarousel(){ if(carouselInterval) clearInterval(carouselInterval); carouselInterval = null; }
+
+
+function initNextPage(){
+// start typing once
+startTyping();
+// start carousel
+startCarousel();
+}
+
+
+// start when nextPage becomes visible
+const obs = new MutationObserver(()=>{
+if(next && window.getComputedStyle(next).display !== 'none'){
+initNextPage();
+obs.disconnect();
+}
+});
+if(next) obs.observe(next, {attributes:true,attributeFilter:['style','class']});
+
+
+// if already visible on load
+if(next && window.getComputedStyle(next).display !== 'none') initNextPage();
+})();
+
+</script>
+
+</body>
+</html>
