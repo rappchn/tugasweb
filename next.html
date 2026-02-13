@@ -39,84 +39,18 @@
 
     /* Warna latar belakang keseluruhan */
 body {
-  background: linear-gradient(135deg, #d5d5d5, #8a8a8a);
-  color: #a29c9c;
+  background: linear-gradient(135deg, #fcfcfc, #fcfcfc);
   font-family: 'Poppins', sans-serif;
   margin: 0;
   overflow-x: hidden;
 }
 
-/* Area nextPage agar tetap fullscreen */
-#nextPage {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: 100vh;
-  width: 100%;
-  padding: 0 5%;
-  box-sizing: border-box;
-  transition: background 1s ease;
-}
-
-/* Efek transisi pada teks */
-#nextPage h1, #nextPage p {
-  animation: fadeInText 2s ease forwards;
-  opacity: 0;
-}
-
-@keyframes fadeInText {
-  from { opacity: 0; transform: translateY(30px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/* Efek transisi gambar */
-#heroImage {
-  max-width: 50%;
-  height: 100vh;
-  object-fit: cover;
-  border-radius: 10px;
-  animation: fadeZoom 2.5s ease forwards;
-  opacity: 0;
-}
-
-@keyframes fadeZoom {
-  from {
-    opacity: 0;
-    transform: scale(1.1);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-/* Carousel agar fullscreen dan menyatu dengan warna abu */
-.carousel {
-  width: 100%;
-  height: 100vh;
-  overflow: hidden;
-  background: #c8c8c8;
-}
-
-.carousel img {
-  width: 100%;
-  height: 100vh;
-  object-fit: cover;
-  animation: fadeSlide 2s ease-in-out;
-}
-
-@keyframes fadeSlide {
-  from { opacity: 0; transform: scale(1.05); }
-  to { opacity: 1; transform: scale(1); }
-}
-
 .next-hero {
-    background-color: #c4bbbb;
-    padding-right: 0px;
+    background: linear-gradient(135deg, #ffd6e7, #ffeef5);
 }
 
 #typingText {
-  color: #f2f2f2; /* ganti dengan warna yang kamu inginkan */
+  color: #f090c0; /* ganti dengan warna yang kamu inginkan */
   font-family: "Noto Serif Telugu", serif;
   font-optical-sizing: auto;
   font-weight: 400;
@@ -130,25 +64,40 @@ body {
 
   <main>
     <!-- HERO (dua kolom) -->
-    <img src="mensive.gif">
+    <div style="display:flex; justify-content:center; align-items:center; height:100vh;">
+    <img id="loveGif" src="valentine.gif">
+  </div>
+
+  <script>
+  const gif = document.getElementById("loveGif");
+
+  /* durasi gif pertama (dalam milidetik)
+    misalnya 4 detik = 4000 */
+  setTimeout(() => {
+      gif.src = "iloveyou.gif";
+  }, 4000);
+  </script>
+
+      <img id="loveGif" src="surat.gif" style="width: 100vw; height: 100vh;">
+
+
+
+
     <section class="next-hero" id="hero">
       <div class="col-text">
-        <h1 id="heroTitle">It's our day</h1>
+        <h1 id="heroTitle">To my beloved gf</h1>
         <p><span id="typingText" class="typing"></span></p>
       </div>
 
       <div class="col-image">
         <!-- gambar besar setengah halaman, ganti path sesuai file Anda -->
-         <img src="love.png" alt="" style="padding-right: 50px;">
+         <img src="polaroid.png" alt="" style="padding-right: 50px;">
         <img id="heroImage" src="pb2.jpeg">
       </div>
     </section>
 
     <!-- CAROUSEL FULLSCREEN (di bawah hero) -->
-    <section id="carousel" class="carousel-wrap" aria-hidden="false">
-      <div class="carousel-slide show"><img src="photostrip1.png" alt="slide 1"></div>
-      <div class="carousel-slide"><img src="photostrip2.png" alt="slide 2"></div>
-    </section>
+
     <img src="slide2.gif">
   </main>
 
@@ -163,7 +112,7 @@ body {
 // Typing text
 (function(){
   const typingEl = document.getElementById('typingText');
-  const message = "To Ma Belle🩷, Kita baru sebulan ngejalanin ini, aku ngerasa selalu seneng setiap momen bareng kamu. Aku tau ini baru awal dari segalanya, tapi aku harap kita bisa terus bareng di hubungan ini buat saling memahami, menyayangi, dan saling menjaga satu sama lain apa pun yang terjadi.";
+  const message = "Ga kerasa ya kita udah sejauh ini, aku bangga banget bisa terus sama kamu, setiap kekurangan kita selalu ngerasa makin ngertiin satu sama lain. setiap hal kecil dari kamu aku selalu bikin aku makin sayang. semoga kita bisa terus bareng, aku cinta kamu sekali ma belle💗";
   const speed = 40;
   let i = 0;
   function step(){
